@@ -1,0 +1,17 @@
+.card-wide.mdl-card {
+  width: 512px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+.card-wide > .mdl-card__title {
+  color: #fff;
+  height: 312px;
+  background: url('http://cdn.someecards.com/someecards/usercards/MjAxMi1lNjFhNTI2OGNhZTBkY2Vl.png') center / cover;
+}
+.card-wide > .mdl-card__menu {
+  color: #fff;
+}
