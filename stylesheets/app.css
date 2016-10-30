@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+*{
+  background: #1d1f21;
+  color: #fff;
+  font-family: 'Roboto Mono', monospace;
+}
+.main{
+  margin:1em;
+}
+
+span.email {
+    color: #FF9800;
+}
+
+a:link, a:visited , a:active {
+  color: #FF9800;
+}
+
+@media screen
+  and (min-device-width: 1200px)
+  and (max-device-width: 1600px)
+  and (-webkit-min-device-pixel-ratio: 1) {
+    .main{
+      margin:10%;
+    }
+}
