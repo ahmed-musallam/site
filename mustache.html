@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- favicon provided by: http://www.favicon.cc/?action=icon&file_id=850631-->
+  <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAIR0YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAABAAERAAAAABEQEREQAAABEREQAREAABEQARABERERERABAAARERERAAAAAAERERAAAAAAABABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//AAD//wAA3/sAAI/xAAAH4AAAY8YAAGAGAADwDwAA+B8AAP2/AAD//wAA//8AAP//AAD//wAA" rel="icon" type="image/x-icon" />
+  <title>Mustache playground</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+</head>
+<style>
+  .half-vh {
+    height: 35vh;
+  }
+
+  .full-vh {
+    height: 70vh;
+  }
+
+  .purple {
+    color: #9b4dca
+  }
+
+  .h6 {
+    font-size: 1.6rem;
+    letter-spacing: 0rem;
+  }
+
+  .no-margin-bottom {
+    margin-bottom: 0;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <h3 class="purple no-margin-bottom">Quick string templating using mustache!</h3>
+    <h6><em class="h6">*all changes are saved to browser localstorage</em></h6>
+    <div class="row">
+      <div class="column">
+        <h4 class="no-margin-bottom">Mustache template</h4>
+        <textarea class="half-vh" id='src'>hello this is {{name}}</textarea>
+        <h4 class="no-margin-bottom">JSON data</h4>
+        <textarea class="half-vh" id='data'>{"name":"ahmed"}</textarea>
+      </div>
+      <div class="column">
+        <h4 class="no-margin-bottom">Result</h4>
+        <textarea class="full-vh" id='des'></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function ready(fn) { // when document is ready
+      if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        fn();
+      } else {
+        document.addEventListener('DOMContentLoaded', fn);
+      }
+    }
+
+    function remember($src, $data) { // save all textareas to localstorage
+      var snapshot = {
+        src: $src.value,
+        data: $data.value
+      }
+      if (window.localStorage) localStorage.setItem('snapshot', JSON.stringify(snapshot));
+    }
+
+    function remind($src, $data) { // set all textareas from localstorage
+      if (!window.localStorage) return; // no locastorage support
+      var snapshot = localStorage.getItem('snapshot');
+      if (!snapshot) return;
+      snapshot = JSON.parse(snapshot);
+      $src.value = snapshot.src;
+      $data.value = snapshot.data;
+    }
+
+    function showResult($src, $des, $data) { // compile template and show result in des textarea
+      try {
+        remember($src, $data);
+        var data = JSON.parse($data.value);
+        Mustache.parse($src.value);
+        var processed = Mustache.render($src.value, data);
+        $des.value = processed;
+      } catch (e) {
+        $des.value = 'JSON ERR: ' + e;
+      }
+    }
+    // find element by id shorthand
+    function byId(id) {
+      return document.getElementById(id)
+    }
+
+    // when doc is ready
+    ready(function() {
+      // store textareas for later use
+      var $src = byId('src'),
+        $des = byId('des'),
+        $data = byId('data');
+      var showResultHandler = function() {
+        showResult($src, $des, $data);
+      };
+      remind($src, $data); // first get saved snapshot, if there is any
+      showResultHandler() // show result of current template
+      $src.addEventListener('input', showResultHandler); // if template changes show result
+      $data.addEventListener('input', showResultHandler); // if data changes show result
+    })
+  </script>
+</body>
+  
+</html>
