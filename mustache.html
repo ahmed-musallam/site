@@ -41,7 +41,7 @@
       <div class="column">
         <h4 class="no-margin-bottom">Mustache template</h4>
         <textarea class="half-vh" id='src'>hello this is {{name}}</textarea>
-        <h4 class="no-margin-bottom">JSON data</h4>
+        <h4 class="no-margin-bottom">JSON data <a class="button button-clear" href="#" id="format">Format</a></h4>
         <textarea class="half-vh" id='data'>{"name":"ahmed"}</textarea>
       </div>
       <div class="column">
@@ -50,6 +50,7 @@
       </div>
     </div>
   </div>
+
 
   <script>
     function ready(fn) { // when document is ready
@@ -76,7 +77,7 @@
     }
     
     var $status;
-    function status(txt){
+    function status(txt){ // change the status text
       $status = $status || byId('status');
       $status.innerHTML = txt;
       return $status;
@@ -115,17 +116,25 @@
         $des.value = 'JSON ERR: ' + e;
       }
     }
-    // find element by id shorthand
-    function byId(id) {
+    
+    function format(e, $data){ // format the json data input
+      try{
+        var data = JSON.parse($data.value)
+        $data.value = JSON.stringify(data, null, 4)
+      }
+      catch(e){
+        console.log("invalid JSON in data field");
+      }
+    }
+    
+    function byId(id) { // find element by id shorthand
       return document.getElementById(id)
     }
 
     // when doc is ready
     ready(function() {
       // store textareas for later use
-      var $src = byId('src'),
-        $des = byId('des'),
-        $data = byId('data');
+      var $src = byId('src'), $des = byId('des'), $data = byId('data');
       var showResultHandler = function() {
         showResult($src, $des, $data);
       };
@@ -133,6 +142,7 @@
       showResultHandler() // show result of current template
       $src.addEventListener('input', showResultHandler); // if template changes show result
       $data.addEventListener('input', showResultHandler); // if data changes show result
+      byId('format').addEventListener('click', function(e){ format(e, $data)})
     })
   </script>
 </body>
