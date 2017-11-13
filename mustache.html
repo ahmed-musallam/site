@@ -36,7 +36,7 @@
 <body>
   <div class="container">
     <h3 class="purple no-margin-bottom">Quick string templating using mustache!</h3>
-    <h6><em class="h6">*all changes are saved to browser localstorage</em></h6>
+    <h6 class="no-margin-bottom "><em class="h6">Changes are auto-saved to browser localstorage</em> - status: <b><span id="status"></span></b></h6>
     <div class="row">
       <div class="column">
         <h4 class="no-margin-bottom">Mustache template</h4>
@@ -59,13 +59,40 @@
         document.addEventListener('DOMContentLoaded', fn);
       }
     }
+    
+    function fadeIn(el) { // fade html element in. supprts IE 9+
+      el.style.opacity = 0;
+
+      var last = +new Date();
+      var tick = function() {
+        el.style.opacity = +el.style.opacity + (new Date() - last) / 400;
+        last = +new Date();
+
+        if (+el.style.opacity < 1) {
+          (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16);
+        }
+      };
+      tick();
+    }
+    
+    var $status;
+    function status(txt){
+      $status = $status || byId('status');
+      $status.innerHTML = txt;
+      return $status;
+    }
 
     function remember($src, $data) { // save all textareas to localstorage
+      fadeIn(status('Saving...'));
       var snapshot = {
         src: $src.value,
         data: $data.value
       }
-      if (window.localStorage) localStorage.setItem('snapshot', JSON.stringify(snapshot));
+      if (window.localStorage){
+        localStorage.setItem('snapshot', JSON.stringify(snapshot));
+        fadeIn(status('Saved!'));
+      }
+      else status('Your browser does not support localstorage');
     }
 
     function remind($src, $data) { // set all textareas from localstorage
